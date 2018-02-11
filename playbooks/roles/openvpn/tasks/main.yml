@@ -1,0 +1,14 @@
+# Read first: https://github.com/kylemanna/docker-openvpn#quick-start
+#- shell: "docker run -v {{ovpn_data}}:/etc/openvpn --rm kylemanna/openvpn ovpn_genconfig -u udp://vpn.cspub.net"
+#- shell: "docker run -v {{ovpn_data}}:/etc/openvpn --rm -it kylemanna/openvpn ovpn_initpki"
+
+- name: start openvpn container
+  docker_container:
+    name: openvpn
+    image: kylemanna/openvpn
+    ports:
+      - 1194:1194/udp
+    capabilities:
+      - NET_ADMIN
+    volumes:
+      - "{{ovpn_data}}:/etc/openvpn"

@@ -1,7 +1,12 @@
 ---
 - hosts: spy
 
+  vars:
+    # TODO: move to playbook defaults dir
+    ovpn_data: "/openvpn_data"
+
   roles:
-    - common
-    - role: angstwad.docker_ubuntu
-      docker_group_members: [ops]
+  - common
+  - role: angstwad.docker_ubuntu
+    docker_group_members: [ops]
+  - openvpn

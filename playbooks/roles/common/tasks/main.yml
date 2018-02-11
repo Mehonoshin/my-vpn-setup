@@ -6,6 +6,7 @@
     - vim
   become: true
 
+# TODO: Add user to sudoers file
 - name: add ops user
   user:
     name: ops
