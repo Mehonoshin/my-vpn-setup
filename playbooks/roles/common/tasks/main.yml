@@ -1,0 +1,37 @@
+- name: install packages
+  apt: name={{ item }} update_cache=yes state=latest
+  with_items:
+    - mc
+    - htop
+    - vim
+  become: true
+
+- name: add ops user
+  user:
+    name: ops
+    comment: "Default user"
+    shell: /bin/bash
+    generate_ssh_key: yes
+    ssh_key_bits: 2048
+    ssh_key_file: .ssh/id_rsa
+  become: true
+
+- name: create ops .ssh directory
+  file:
+    path: /home/ops/.ssh
+    state: directory
+    owner: ops
+    group: ops
+    mode: 0700
+  become: true
+
+- name: copy public keys
+  copy:
+    directory_mode: yes
+    src: /root/.ssh/authorized_keys
+    dest: /home/ops/.ssh/authorized_keys
+    owner: ops
+    group: ops
+    mode: 0600
+    remote_src: yes
+  become: true

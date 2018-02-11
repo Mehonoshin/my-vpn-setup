@@ -1,0 +1,7 @@
+---
+- hosts: spy
+
+  roles:
+    - common
+    #- docker
+    #- openvpn
