@@ -3,5 +3,5 @@
 
   roles:
     - common
-    #- docker
-    #- openvpn
+    - role: angstwad.docker_ubuntu
+      docker_group_members: [ops]
