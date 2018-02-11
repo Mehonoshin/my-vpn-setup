@@ -1,0 +1,13 @@
+---
+- hosts: gateway
+  remote_user: pi
+
+  roles:
+    #- common
+
+  tasks:
+
+    - name: install openvpn client
+      apt:
+        name: openvpn
+      become: true
