@@ -1,13 +1,48 @@
 ---
 - hosts: gateway
   remote_user: pi
+  become: true
 
   roles:
     #- common
 
   tasks:
+    - name: install routing packages
+      apt: name={{ item }} update_cache=yes state=latest
+      with_items:
+        - iptables-persistent
+        - openvpn
 
-    - name: install openvpn client
-      apt:
-        name: openvpn
-      become: true
+    - name: enable forwarding
+      sysctl:
+        name: net.ipv4.ip_forward
+        value: 1
+        sysctl_set: yes
+        state: present
+        reload: yes
+
+    - name: setup postgrouting
+      iptables:
+        table: nat
+        chain: POSTROUTING
+        out_interface: tun0
+        jump: MASQUERADE
+
+    - name: setup direct forwarding
+      iptables:
+        chain: FORWARD
+        in_interface: tun0
+        out_interface: eth0
+        match: state
+        ctstate: RELATED,ESTABLISHED
+        jump: ACCEPT
+
+    - name: setup reverse forwarding
+      iptables:
+        chain: FORWARD
+        in_interface: eth0
+        out_interface: tun0
+        jump: ACCEPT
+
+    - shell: 'netfilter-persistent save'
+    - shell: 'systemctl enable netfilter-persistent'
